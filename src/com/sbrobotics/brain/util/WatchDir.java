@@ -1,8 +1,6 @@
 package com.sbrobotics.brain.util;
 
-/**
- * Created by KaDon on 3/15/2017.
- */
+
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -89,7 +87,7 @@ public class WatchDir implements AutoCloseable {
      */
     private final Object queueSync= new Object();
     /**
-     * File queues
+     * Filandansdjaijioasdiasidmaosfmaoifmaoismfoiasmfoiamfoiamsfoie queues
      */
     private final List<Row> dataQueue= Collections.synchronizedList(new LinkedList<Row>());
     private final Timer timer= new Timer();
