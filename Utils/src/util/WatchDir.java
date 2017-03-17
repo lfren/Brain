@@ -99,29 +99,33 @@ public class WatchDir implements AutoCloseable {
                 int i = 0;
                 Row averageRow = new Row();
                 averageRow.data = new Double[11];
-                while (i < 20) {
-                    if (!dataQueue.isEmpty()) {
-                        Row row = dataQueue.remove(0);
-                        if (averageRow.timeStamp > 0) {
-                            averageRow.timeStamp = (row.timeStamp + averageRow.timeStamp) / 2;
-                            for (int j = 0; j < row.data.length; j++) {
-                                if (averageRow.data.length > j) {
-                                    averageRow.data[j] =  (averageRow.data[j]  + row.data[j])/2;
-                                } else {
-                                    averageRow.data[j] = row.data[j];
-                                }
 
-                            }
-                            averageRow.data = row.data;
-                        }  else {
-                            averageRow.timeStamp = row.timeStamp;
-                            averageRow.data = row.data;
+
+                int processingSize = dataQueue.size();
+                if (processingSize > 20) {
+                    processingSize = 20;
+                }
+
+                while (i < processingSize) {
+                    Row row = dataQueue.remove(0);
+                    if (averageRow.timeStamp > 0) {
+                        averageRow.timeStamp = (row.timeStamp + averageRow.timeStamp);
+                        for (int j = 0; j < row.data.length; j++) {
+                            averageRow.data[j] =  (averageRow.data[j]  + row.data[j]);
+
                         }
+                    } else {
+                        averageRow.timeStamp = row.timeStamp;
+                        averageRow.data = row.data;
                     }
-
                     i++;
                 }
-                if (averageRow.timeStamp > 0) {
+                if (processingSize > 0) {
+                    averageRow.timeStamp = averageRow.timeStamp / processingSize;
+                    for (int j = 0; j < averageRow.data.length; j++) {
+                        averageRow.data[j] =  averageRow.data[j] / processingSize;
+
+                    }
                     Date date = new Date(averageRow.timeStamp);
                     String avDataString = "";
                     for (int j = 0; j < averageRow.data.length; j++) {
