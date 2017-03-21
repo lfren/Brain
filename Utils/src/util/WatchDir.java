@@ -95,6 +95,23 @@ public class WatchDir implements AutoCloseable {
     private Row latestAverageRow = null;
     private Row previousRow = null;
 
+    private static HashMap<Integer, String> LABELS_MAP = new HashMap<>();
+    static {
+        LABELS_MAP.put(0, "Signal Quality");
+        LABELS_MAP.put(1, "Attention");
+        LABELS_MAP.put(2, "Meditation");
+        LABELS_MAP.put(3, "Delta");
+        LABELS_MAP.put(4, "Theta");
+        LABELS_MAP.put(5, "Low Alpha");
+        LABELS_MAP.put(6, "High Alpha");
+        LABELS_MAP.put(7, "Low Beta");
+        LABELS_MAP.put(8, "High Beta");
+        LABELS_MAP.put(9, "Low Gamma");
+        LABELS_MAP.put(10, "Mid Gamma");
+    }
+
+
+
     private class QueueWorker extends TimerTask {
         @Override
         public void run(){
@@ -118,7 +135,7 @@ public class WatchDir implements AutoCloseable {
                         for (int j = 0; j < row.data.length; j++) {
                             deltaRow.data[j] =  (previousRow.data[j]  - row.data[j]);
                             if (deltaRow.data[j] > 40) {
-                                System.out.println("Significant change for position " + j + ": " + deltaRow.data[j]);
+                                System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + deltaRow.data[j]);
                             }
 
                         }
