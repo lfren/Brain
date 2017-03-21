@@ -92,6 +92,9 @@ public class WatchDir implements AutoCloseable {
     private final List<Row> dataQueue= Collections.synchronizedList(new LinkedList<Row>());
     private final Timer timer= new Timer();
     private Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+    private Row latestAverageRow = null;
+    private Row previousRow = null;
+
     private class QueueWorker extends TimerTask {
         @Override
         public void run(){
@@ -99,6 +102,9 @@ public class WatchDir implements AutoCloseable {
                 int i = 0;
                 Row averageRow = new Row();
                 averageRow.data = new Double[11];
+
+                Row deltaRow = new Row();
+                deltaRow.data = new Double[11];
 
 
                 int processingSize = dataQueue.size();
@@ -108,6 +114,16 @@ public class WatchDir implements AutoCloseable {
 
                 while (i < processingSize) {
                     Row row = dataQueue.remove(0);
+                    if (previousRow != null) {
+                        for (int j = 0; j < row.data.length; j++) {
+                            deltaRow.data[j] =  (previousRow.data[j]  - row.data[j]);
+                            if (deltaRow.data[j] > 40) {
+                                System.out.println("Significant change for position " + j + ": " + deltaRow.data[j]);
+                            }
+
+                        }
+                    }
+
                     if (averageRow.timeStamp > 0) {
                         averageRow.timeStamp = (row.timeStamp + averageRow.timeStamp);
                         for (int j = 0; j < row.data.length; j++) {
@@ -118,6 +134,7 @@ public class WatchDir implements AutoCloseable {
                         averageRow.timeStamp = row.timeStamp;
                         averageRow.data = row.data;
                     }
+                    previousRow = row;
                     i++;
                 }
                 if (processingSize > 0) {
@@ -133,6 +150,7 @@ public class WatchDir implements AutoCloseable {
                     }
 
                     System.out.println(format.format(date) + ", " + averageRow.timeStamp  + ", " + avDataString);
+                    latestAverageRow = averageRow;
                 }
             }
         }
