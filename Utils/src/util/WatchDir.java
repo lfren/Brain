@@ -120,8 +120,8 @@ public class WatchDir implements AutoCloseable {
                 Row averageRow = new Row();
                 averageRow.data = new Double[11];
 
-                Row deltaRow = new Row();
-                deltaRow.data = new Double[11];
+                Row differenceRow = new Row();
+                differenceRow.data = new Double[11];
 
 
                 int processingSize = dataQueue.size();
@@ -132,29 +132,37 @@ public class WatchDir implements AutoCloseable {
                 while (i < processingSize) {
                     Row row = dataQueue.remove(0);
                     if (previousRow != null) {
+                        averageRow.timeStamp = (row.timeStamp + averageRow.timeStamp);
                         for (int j = 0; j < row.data.length; j++) {
-                            deltaRow.data[j] =  (previousRow.data[j]  - row.data[j]);
-                            if (deltaRow.data[j] > 40) {
-                                System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + deltaRow.data[j]);
+                            averageRow.data[j] =  (previousRow.data[j]  + row.data[j]) / 2;
+
+                        }
+                        boolean isSiginificantChange = false;
+                        for (int j = 0; j < row.data.length; j++) {
+                            differenceRow.data[j] =  (previousRow.data[j]  - row.data[j]) / averageRow.data[j] * 100;
+                            if (differenceRow.data[j] > 10) {
+                                isSiginificantChange = true;
+                                System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
                             }
 
                         }
-                    }
+                        if (isSiginificantChange) {
+                            Date date = new Date(differenceRow.timeStamp);
+                            String differenceDataString = "";
+                            for (int j = 0; j < differenceRow.data.length; j++) {
+                                differenceDataString += differenceRow.data[j].toString() + ", ";
+                            }
 
-                    if (averageRow.timeStamp > 0) {
-                        averageRow.timeStamp = (row.timeStamp + averageRow.timeStamp);
-                        for (int j = 0; j < row.data.length; j++) {
-                            averageRow.data[j] =  (averageRow.data[j]  + row.data[j]);
+                            System.out.println(format.format(date) + ", " + differenceRow.timeStamp  + ", " + differenceDataString);
 
                         }
-                    } else {
-                        averageRow.timeStamp = row.timeStamp;
-                        averageRow.data = row.data;
                     }
+
+
                     previousRow = row;
                     i++;
                 }
-                if (processingSize > 0) {
+              /*  if (processingSize > 0) {
                     averageRow.timeStamp = averageRow.timeStamp / processingSize;
                     for (int j = 0; j < averageRow.data.length; j++) {
                         averageRow.data[j] =  averageRow.data[j] / processingSize;
@@ -168,7 +176,7 @@ public class WatchDir implements AutoCloseable {
 
                     System.out.println(format.format(date) + ", " + averageRow.timeStamp  + ", " + avDataString);
                     latestAverageRow = averageRow;
-                }
+                }*/
             }
         }
     }
