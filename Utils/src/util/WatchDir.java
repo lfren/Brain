@@ -139,7 +139,7 @@ public class WatchDir implements AutoCloseable {
                         }
                         boolean isSiginificantChange = false;
                         for (int j = 0; j < row.data.length; j++) {
-                            differenceRow.data[j] =  (previousRow.data[j]  - row.data[j]) / averageRow.data[j] * 100;
+                            differenceRow.data[j] =  (previousRow.data[j]  - row.data[j] - averageRow.data[j]) / averageRow.data[j] * 100;
                             if (differenceRow.data[j] > 10) {
                                 isSiginificantChange = true;
                                 System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
