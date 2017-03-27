@@ -90,10 +90,12 @@ public class WatchDir implements AutoCloseable {
      * Filandansdjaijioasdiasidmaosfmaoifmaoismfoiasmfoiamfoiamsfoie queues
      */
     private final List<Row> dataQueue= Collections.synchronizedList(new LinkedList<Row>());
+    private final List<Row> commandQueue= Collections.synchronizedList(new LinkedList<Row>());
     private final Timer timer= new Timer();
     private Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
     private Row latestAverageRow = null;
     private Row previousRow = null;
+    private Row currentCommand = null;
 
     private static HashMap<Integer, String> LABELS_MAP = new HashMap<>();
     static {
@@ -131,6 +133,9 @@ public class WatchDir implements AutoCloseable {
 
                 while (i < processingSize) {
                     Row row = dataQueue.remove(0);
+                    if (commandQueue.size() > 0) {
+                        currentCommand = commandQueue.remove(0);
+                    }
                     if (previousRow != null) {
                         averageRow.timeStamp = (row.timeStamp + averageRow.timeStamp);
                         for (int j = 0; j < row.data.length; j++) {
@@ -149,6 +154,14 @@ public class WatchDir implements AutoCloseable {
                         if (isSiginificantChange) {
                             Date date = new Date(differenceRow.timeStamp);
                             String differenceDataString = "";
+                            if (currentCommand != null) {
+                                for (int j = 0; j < currentCommand.data.length; j++) {
+                                    differenceDataString += currentCommand.data[j].toString() + ", ";
+                                }
+
+                            } else {
+                                differenceDataString = "-1, -1, ";
+                            }
                             for (int j = 0; j < differenceRow.data.length; j++) {
                                 differenceDataString += differenceRow.data[j].toString() + ", ";
                             }
@@ -188,8 +201,10 @@ public class WatchDir implements AutoCloseable {
     long fileLength = 0;
     public void processEvents() throws SAXException, TransformerException, ParserConfigurationException, IOException {
         LinkedList<Row> dataQ= new LinkedList<Row>();
+        LinkedList<Row> commandQ= new LinkedList<Row>();
         while (opened) {
             dataQ.clear();
+            commandQ.clear();
             // wait for key to be signalled
             WatchKey key;
             try {
@@ -238,6 +253,7 @@ public class WatchDir implements AutoCloseable {
             }
             synchronized(queueSync){
                 dataQueue.addAll(dataQ);
+                commandQueue.addAll(commandQ);
             }
 
             // reset key and remove from set if directory no longer accessible
@@ -272,7 +288,15 @@ public class WatchDir implements AutoCloseable {
                     Row row = new Row();
                     row.timeStamp = System.currentTimeMillis();
                     row.data = response;
-                    dataQueue.add(row);
+                    switch (file.getName()) {
+                        case "command.txt":
+                            commandQueue.add(row);
+                            break;
+                        case "data.txt":
+                            dataQueue.add(row);
+                            break;
+                    }
+
                 }
 
             } else {
@@ -290,7 +314,7 @@ public class WatchDir implements AutoCloseable {
 
 
         // register directory and process its events
-        Path dir = Paths.get("C:\\Projects\\Brain\\kitschpatrol-Brain-6c69266\\BrainGrapher");
+        Path dir = Paths.get(args[0]);
         new WatchDir(dir).processEvents();
         //
 
