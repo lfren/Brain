@@ -143,14 +143,18 @@ public class WatchDir implements AutoCloseable {
 
                         }
                         boolean isSiginificantChange = false;
-                        for (int j = 0; j < row.data.length; j++) {
-                            differenceRow.data[j] =  (previousRow.data[j]  - row.data[j] - averageRow.data[j]) / averageRow.data[j] * 100;
-                            if (differenceRow.data[j] > 10) {
-                                isSiginificantChange = true;
-                                System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
-                            }
+                        // check if noise 0 and one of the values changed more than 10% (absolute value)
+                        if (row.data.length > 1 && row.data[0] == 0) {
+                            for (int j = 0; j < row.data.length; j++) {
+                                differenceRow.data[j] =  (previousRow.data[j]  - row.data[j] - averageRow.data[j]) / averageRow.data[j] * 100;
+                                if (differenceRow.data[j] > 10 || differenceRow.data[j] <- 10 ) {
+                                    isSiginificantChange = true;
+                             //       System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
+                                }
 
+                            }
                         }
+                        // if above yes, then log
                         if (isSiginificantChange) {
                             Date date = new Date(differenceRow.timeStamp);
                             String differenceDataString = "";
@@ -163,10 +167,10 @@ public class WatchDir implements AutoCloseable {
                                 differenceDataString = "-1, -1, ";
                             }
                             for (int j = 0; j < differenceRow.data.length; j++) {
-                                differenceDataString += differenceRow.data[j].toString() + ", ";
+                                differenceDataString +=  ((j ==0) ? row.data[j] : differenceRow.data[j].toString()) + ", ";
                             }
 
-                            System.out.println(format.format(date) + ", " + differenceRow.timeStamp  + ", " + differenceDataString);
+                            System.out.println(/*format.format(date) + ", " + differenceRow.timeStamp  + ", " + */differenceDataString);
 
                         }
                     }
@@ -199,6 +203,7 @@ public class WatchDir implements AutoCloseable {
      */
 
     long fileLength = 0;
+    long fileLengthCommand = 0;
     public void processEvents() throws SAXException, TransformerException, ParserConfigurationException, IOException {
         LinkedList<Row> dataQ= new LinkedList<Row>();
         LinkedList<Row> commandQ= new LinkedList<Row>();
@@ -242,11 +247,9 @@ public class WatchDir implements AutoCloseable {
                 if(kind == StandardWatchEventKinds.ENTRY_MODIFY){
                     File file = child.toFile();
                     readFile(file);
-                    while(true){
-                        if(fileLength < file.length()){
-                            readFile(file);
-                        }
-                    }
+                   /* while(true){
+                       readFile(file);
+                    }*/
 
                 }
 
@@ -272,41 +275,55 @@ public class WatchDir implements AutoCloseable {
 
 
     public synchronized void readFile(File file) throws IOException {
-        String line = null;
-        // 0,67,44,593634,40191,7155,5066,5082,5325,7873,7402
-        BufferedReader in = new BufferedReader(new java.io.FileReader(file));
-        in.skip(fileLength);
-        while((line = in.readLine()) != null) {
-            String[] split = null;
-            if (line.contains(",")) {
-                split = line.split(",");
-                if (split.length == 11) {
-                    Double[] response = new Double[split.length];
-                    for (int i = 0; i < split.length; i++) {
-                        response[i] = Double.valueOf(split[i]);
-                    }
-                    Row row = new Row();
-                    row.timeStamp = System.currentTimeMillis();
-                    row.data = response;
-                    switch (file.getName()) {
-                        case "command.txt":
-                            commandQueue.add(row);
-                            break;
-                        case "data.txt":
-                            dataQueue.add(row);
-                            break;
-                    }
-
-                }
-
-            } else {
-                split = new String[1];
-                split[0] = line;
-            }
-            System.out.println(line);
+        long actualFileLength = -1;
+        switch (file.getName()) {
+            case "command.txt":
+                actualFileLength = fileLengthCommand;
+                fileLengthCommand = file.length();
+                break;
+            case "data.txt":
+                actualFileLength = fileLength;
+                fileLength = file.length();
+                break;
         }
-        in.close();
-        fileLength = file.length();
+        if(actualFileLength < file.length()){
+            String line = null;
+            // 0,67,44,593634,40191,7155,5066,5082,5325,7873,7402
+            BufferedReader in = new BufferedReader(new java.io.FileReader(file));
+            in.skip(actualFileLength);
+            while((line = in.readLine()) != null) {
+                String[] split = null;
+                if (line.contains(",")) {
+                    split = line.split(",");
+                    if (split.length == 11 || split.length == 2) {
+                        Double[] response = new Double[split.length];
+                        for (int i = 0; i < split.length; i++) {
+                            response[i] = Double.valueOf(split[i]);
+                        }
+                        Row row = new Row();
+                        row.timeStamp = System.currentTimeMillis();
+                        row.data = response;
+                        switch (file.getName()) {
+                            case "command.txt":
+                                commandQueue.add(row);
+                                break;
+                            case "data.txt":
+                                dataQueue.add(row);
+                                break;
+                        }
+
+                    }
+
+                } else {
+                    split = new String[1];
+                    split[0] = line;
+                }
+             //   System.out.println(line);
+            }
+            in.close();
+
+        }
+
     }
 
 
