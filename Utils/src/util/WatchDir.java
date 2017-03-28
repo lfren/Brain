@@ -146,12 +146,13 @@ public class WatchDir implements AutoCloseable {
                         // check if noise 0 and one of the values changed more than 10% (absolute value)
                         if (row.data.length > 1 && row.data[0] == 0) {
                             for (int j = 0; j < row.data.length; j++) {
-                                differenceRow.data[j] =  (previousRow.data[j]  - row.data[j] - averageRow.data[j]) / averageRow.data[j] * 100;
-                                if (differenceRow.data[j] > 10 || differenceRow.data[j] <- 10 ) {
-                                    isSiginificantChange = true;
-                             //       System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
+                                if (averageRow.data[j] != 0) {
+                                    differenceRow.data[j] =  (row.data[j] - averageRow.data[j]) / averageRow.data[j] * 100;
+                                    if (differenceRow.data[j] > 10 || differenceRow.data[j] <- 10 ) {
+                                        isSiginificantChange = true;
+                                        //       System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
+                                    }
                                 }
-
                             }
                         }
                         // if above yes, then log
