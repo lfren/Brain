@@ -276,22 +276,22 @@ public class WatchDir implements AutoCloseable {
 
 
     public synchronized void readFile(File file) throws IOException {
-        long actualFileLength = -1;
+        long previousFileLength = -1;
         switch (file.getName()) {
             case "command.txt":
-                actualFileLength = fileLengthCommand;
+                previousFileLength = fileLengthCommand;
                 fileLengthCommand = file.length();
                 break;
             case "data.txt":
-                actualFileLength = fileLength;
+                previousFileLength = fileLength;
                 fileLength = file.length();
                 break;
         }
-        if(actualFileLength < file.length()){
+        if(previousFileLength < file.length()){
             String line = null;
             // 0,67,44,593634,40191,7155,5066,5082,5325,7873,7402
             BufferedReader in = new BufferedReader(new java.io.FileReader(file));
-            in.skip(actualFileLength);
+            in.skip(previousFileLength);
             while((line = in.readLine()) != null) {
                 String[] split = null;
                 if (line.contains(",")) {
