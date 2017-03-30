@@ -154,6 +154,8 @@ public class WatchDir implements AutoCloseable {
                                         isSiginificantChange = true;
                                         //       System.out.println("Significant change for position " + LABELS_MAP.get(j) + ": " + differenceRow.data[j] + "%");
                                     }
+                                } else {
+                                    differenceRow.data[j] = Double.valueOf(0);
                                 }
                             }
                         }
@@ -170,7 +172,14 @@ public class WatchDir implements AutoCloseable {
                                 differenceDataString = "-1, -1, ";
                             }
                             for (int j = 0; j < differenceRow.data.length; j++) {
-                                differenceDataString +=  ((j ==0) ? row.data[j] : formatter.format(differenceRow.data[j])) + ", ";
+                                if (j ==0 && row.data[j] == null) {
+                                    differenceDataString +=   "null 0, ";
+                                } else if ( differenceRow.data[j] == null) {
+                                    differenceDataString +=   "null " + j + ",";
+                                } else {
+                                    differenceDataString +=  ((j ==0) ? row.data[j] : differenceRow.data[j].toString()) + ", ";
+                                }
+
                             }
 
                             System.out.println(/*format.format(date) + ", " + differenceRow.timeStamp  + ", " + */differenceDataString);
