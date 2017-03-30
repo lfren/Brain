@@ -15,6 +15,7 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -112,6 +113,7 @@ public class WatchDir implements AutoCloseable {
         LABELS_MAP.put(10, "Mid Gamma");
     }
 
+    DecimalFormat formatter = new DecimalFormat("#0.00");
 
 
     private class QueueWorker extends TimerTask {
@@ -168,7 +170,7 @@ public class WatchDir implements AutoCloseable {
                                 differenceDataString = "-1, -1, ";
                             }
                             for (int j = 0; j < differenceRow.data.length; j++) {
-                                differenceDataString +=  ((j ==0) ? row.data[j] : differenceRow.data[j].toString()) + ", ";
+                                differenceDataString +=  ((j ==0) ? row.data[j] : formatter.format(differenceRow.data[j])) + ", ";
                             }
 
                             System.out.println(/*format.format(date) + ", " + differenceRow.timeStamp  + ", " + */differenceDataString);
