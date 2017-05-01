@@ -24,6 +24,7 @@ public class BrainProcessing extends PApplet{
     public int packetCount = 0;
     public int globalMax = 0;
     public String scaleMode;
+    private long startTime;
     public void setup() {
         // Set up window
         //    size(1024, 768);
@@ -56,7 +57,15 @@ public class BrainProcessing extends PApplet{
 
 
         output = createWriter("data.txt");
+        startTime = System.currentTimeMillis();
 
+    }
+
+    private String calculateCommand() {
+        long currentTime = System.currentTimeMillis();
+        long differentTime = currentTime - startTime;
+        String command = "-1";
+        return command;
     }
 
     public void serialEvent(Serial p) {
@@ -66,7 +75,14 @@ public class BrainProcessing extends PApplet{
         try {
             incomingString = p.readString();
             if (incomingString.contains(",")) {
-                System.out.println(incomingString);
+                // list of commands
+                // -1 - do nothing
+                // 1 - close eyes
+                // 2 - focus on red circle
+                // 3 - focus on black circle
+                // 4 - focus on white circle
+                String incomingStringWithCommand = calculateCommand() + "," + incomingString;
+                System.out.println(incomingStringWithCommand);
                 output.println(incomingString);
                 output.flush();
             }
