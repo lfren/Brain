@@ -145,8 +145,26 @@ public class WatchDir implements AutoCloseable {
 
                         }
                         boolean isSiginificantChange = false;
-                        // check if noise 0 and one of the values changed more than 10% (absolute value)
+                        String outputString = "";
                         if (row.data.length > 1 && row.data[0] == 0) {
+                            if (currentCommand != null) {
+                                for (int j = 0; j < currentCommand.data.length; j++) {
+                                    outputString += currentCommand.data[j].toString() + ", ";
+                                }
+
+                            } else {
+                                outputString = "-1, -1, ";
+                            }
+
+                            for (int j = 0; j < row.data.length; j++) {
+                                outputString +=  formatter.format(row.data[j]) + ", ";
+
+                            }
+                            System.out.println(outputString);
+                        }
+
+                        // check if noise 0 and one of the values changed more than 10% (absolute value)
+                       /* if (row.data.length > 1 && row.data[0] == 0) {
                             for (int j = 0; j < row.data.length; j++) {
                                 if (averageRow.data[j] != 0) {
                                     differenceRow.data[j] =  (row.data[j] - averageRow.data[j]) / averageRow.data[j] * 100;
@@ -182,9 +200,9 @@ public class WatchDir implements AutoCloseable {
 
                             }
 
-                            System.out.println(/*format.format(date) + ", " + differenceRow.timeStamp  + ", " + */differenceDataString);
+                            System.out.println(*//*format.format(date) + ", " + differenceRow.timeStamp  + ", " + *//*differenceDataString);
 
-                        }
+                        }*/
                     }
 
 
