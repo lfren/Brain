@@ -9,6 +9,8 @@ import processing.serial.Serial;
 
 import java.awt.*;
 import java.io.PrintWriter;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BrainProcessing extends PApplet{
     public ControlP5 controlP5;
@@ -25,6 +27,7 @@ public class BrainProcessing extends PApplet{
     public int globalMax = 0;
     public String scaleMode;
     private long startTime;
+    final private Command command = new Command();
     public void setup() {
         // Set up window
         //    size(1024, 768);
@@ -56,16 +59,23 @@ public class BrainProcessing extends PApplet{
 
 
 
-        output = createWriter("data.txt");
+        output = createWriter("C:\\Projects\\brain\\data\\results.csv");
         startTime = System.currentTimeMillis();
+        Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                java.awt.Toolkit.getDefaultToolkit().beep();
+                command.incrementCurrentCommand();
+                System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                System.out.println ("!                                             !");
+                System.out.println ("!        "  + command.getCurrentCommandDescription() + "           !");
+                System.out.println ("!                                             !");
+                System.out.println ("!                                             !");
+                System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+        }, 0, 20000);
 
-    }
-
-    private String calculateCommand() {
-        long currentTime = System.currentTimeMillis();
-        long differentTime = currentTime - startTime;
-        String command = "-1";
-        return command;
     }
 
     public void serialEvent(Serial p) {
@@ -81,9 +91,9 @@ public class BrainProcessing extends PApplet{
                 // 2 - focus on red circle
                 // 3 - focus on black circle
                 // 4 - focus on white circle
-                String incomingStringWithCommand = calculateCommand() + "," + incomingString;
+                String incomingStringWithCommand = command.getCurrentCommand() + "," + incomingString;
                 System.out.println(incomingStringWithCommand);
-                output.println(incomingString);
+                output.println(incomingStringWithCommand);
                 output.flush();
             }
 
