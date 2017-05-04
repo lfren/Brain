@@ -26,7 +26,6 @@ public class BrainProcessing extends PApplet{
     public int packetCount = 0;
     public int globalMax = 0;
     public String scaleMode;
-    private long startTime;
     final private Command command = new Command();
     public void setup() {
         // Set up window
@@ -60,21 +59,22 @@ public class BrainProcessing extends PApplet{
 
 
         output = createWriter("C:\\Projects\\brain\\data\\results.csv");
-        startTime = System.currentTimeMillis();
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
+        Timer commandTimer = new Timer();
+        TimerTask commmandTask = new TimerTask() {
             @Override
             public void run() {
                 java.awt.Toolkit.getDefaultToolkit().beep();
+                // average result and  output in average.csv
                 command.incrementCurrentCommand();
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println ("!                                             !");
-                System.out.println ("!        "  + command.getCurrentCommandDescription() + "           !");
+                System.out.println ("!        "  + command.getCurrentCommandDescription() + "                   !");
                 System.out.println ("!                                             !");
                 System.out.println ("!                                             !");
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-        }, 0, 20000);
+        };
+        commandTimer.schedule(commmandTask, 0, 20000);
 
     }
 
