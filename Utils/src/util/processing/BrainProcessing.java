@@ -6,11 +6,11 @@ package util.processing;
 import controlP5.ControlP5;
 import processing.core.PApplet;
 import processing.serial.Serial;
+import util.Row;
 
 import java.awt.*;
 import java.io.PrintWriter;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class BrainProcessing extends PApplet{
     public ControlP5 controlP5;
@@ -28,6 +28,9 @@ public class BrainProcessing extends PApplet{
     public String scaleMode;
     private long startTime;
     final private Command command = new Command();
+    final private HashMap<Integer, ArrayList<Double>> averages = new HashMap<>();
+    final private HashSet<Row> rowData = new HashSet<>();
+
     public void setup() {
         // Set up window
         //    size(1024, 768);
@@ -66,7 +69,15 @@ public class BrainProcessing extends PApplet{
             @Override
             public void run() {
                 java.awt.Toolkit.getDefaultToolkit().beep();
+
+                // calculate previous average
+             /*   for (Row : rowData) {
+
+                }*/
+                // reset rowData
                 command.incrementCurrentCommand();
+                rowData.clear();
+
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println ("!                                             !");
                 System.out.println ("!        "  + command.getCurrentCommandDescription() + "           !");

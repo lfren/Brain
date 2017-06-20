@@ -17,6 +17,8 @@ public class AngularJsServlet extends HttpServlet {
         super();
     }
 
+    public static Integer brainState = 1;
+
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
         PersonData personData = new PersonData();
