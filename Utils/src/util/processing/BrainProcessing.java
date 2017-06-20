@@ -10,8 +10,7 @@ import util.Row;
 
 import java.awt.*;
 import java.io.PrintWriter;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class BrainProcessing extends PApplet{
     public ControlP5 controlP5;
@@ -73,7 +72,7 @@ public class BrainProcessing extends PApplet{
                 command.incrementCurrentCommand();
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println ("!                                             !");
-                System.out.println ("!        "  + command.getCurrentCommandDescription() + "                   !");
+                System.out.println ("!        "  + command.getCurrentCommandDescription() + "                         !");
                 System.out.println ("!                                             !");
                 System.out.println ("!                                             !");
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

@@ -26,7 +26,7 @@ public class Command {
     }
 
     public void incrementCurrentCommand() {
-        if (currentCommand == 10) {
+        if (currentCommand == 4) {
             currentCommand = 0;
         }
         currentCommand = currentCommand + 1;
