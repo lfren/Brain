@@ -10,7 +10,8 @@ import util.Row;
 
 import java.awt.*;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BrainProcessing extends PApplet{
     public ControlP5 controlP5;
@@ -63,29 +64,23 @@ public class BrainProcessing extends PApplet{
 
 
         output = createWriter("C:\\Projects\\brain\\data\\results.csv");
-        startTime = System.currentTimeMillis();
-        Timer t = new Timer();
-        t.schedule(new TimerTask() {
+        Timer commandTimer = new Timer();
+        TimerTask commmandTask = new TimerTask() {
             @Override
             public void run() {
                 java.awt.Toolkit.getDefaultToolkit().beep();
-
-                // calculate previous average
-             /*   for (Row : rowData) {
-
-                }*/
-                // reset rowData
+                // average result and  output in average.csv
                 command.incrementCurrentCommand();
-                rowData.clear();
-
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println ("!                                             !");
-                System.out.println ("!        "  + command.getCurrentCommandDescription() + "           !");
+                System.out.println ("!        "  + command.getCurrentCommandDescription() + "                   !");
                 System.out.println ("!                                             !");
                 System.out.println ("!                                             !");
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             }
-        }, 0, 20000);
+        };
+        commandTimer.schedule(commmandTask, 0, 20000);
+                // average result and  output in average.csv
 
     }
 
