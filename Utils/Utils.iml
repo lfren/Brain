@@ -20,11 +20,11 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="file://C:/processing-3.3/core/library" />
+          <root url="file://C:/Projects/processing-3.3/core/library" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://C:/processing-3.3/core/library" recursive="false" />
+        <jarDirectory url="file://C:/Projects/processing-3.3/core/library" recursive="false" />
       </library>
     </orderEntry>
   </component>

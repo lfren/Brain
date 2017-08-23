@@ -32,6 +32,10 @@ public class Command {
         currentCommand = currentCommand + 1;
     }
 
+    public void toggleCommand(int commandA, int commandB) {
+        currentCommand = (currentCommand == commandA) ? commandB : commandA;
+    }
+
     public String getCurrentCommandDescription() {
         return commands.get(currentCommand);
     }

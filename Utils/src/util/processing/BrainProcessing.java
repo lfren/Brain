@@ -69,7 +69,7 @@ public class BrainProcessing extends PApplet{
             public void run() {
                 java.awt.Toolkit.getDefaultToolkit().beep();
                 // average result and  output in average.csv
-                command.incrementCurrentCommand();
+                command.toggleCommand(0,1);
                 System.out.println ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 System.out.println ("!                                             !");
                 System.out.println ("!        "  + command.getCurrentCommandDescription() + "                         !");
@@ -115,6 +115,11 @@ public class BrainProcessing extends PApplet{
     public void draw(){
         /*background(0);
         ellipse(mouseX, mouseY, 20, 20);*/
+    }
+
+    public ArrayList<Integer> calculateAverage(ArrayList<ArrayList<Integer>> round) {
+
+        return null;
     }
 
     public static void main(String... args){

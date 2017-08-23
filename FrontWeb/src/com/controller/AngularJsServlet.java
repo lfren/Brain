@@ -22,8 +22,8 @@ public class AngularJsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
         PersonData personData = new PersonData();
-        personData.setFirstName("Lilia");
-        personData.setLastName("Frenkel");
+        personData.setFirstName("Katya");
+        personData.setLastName("Donetski");
         JSONObject respObject = new JSONObject(personData);
         response.setContentType("application/json");
         response.getWriter().write(respObject.toString());
