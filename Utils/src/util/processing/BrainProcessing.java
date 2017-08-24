@@ -118,13 +118,52 @@ public class BrainProcessing extends PApplet{
     }
 
     public ArrayList<Integer> calculateAverage(ArrayList<ArrayList<Integer>> round) {
-
+        ArrayList<Integer> averages = new ArrayList<>();
+        for (int i = 0; i < round.size(); i++) {
+            ArrayList<Integer> row = round.get(i);
+            if (averages.size() == 0) {
+                for (int j = 0; j < row.size(); j++) {
+                    averages.add(j, 0);
+                }
+            }
+            for (int j = 0; j < row.size(); j++) {
+                Integer el = row.get(j);
+                averages.add(j, averages.get(j) + el);
+            }
+        }
+        for (int j = 0; j < averages.size(); j++) {
+            averages.add(j, averages.get(j) / round.size());
+            System.out.print(averages.get(j) + ",");
+        }
         return null;
     }
 
     public static void main(String... args){
         BrainProcessing pt = new BrainProcessing();
-        PApplet.main(pt.getClass().getCanonicalName());
+        ArrayList<ArrayList<Integer>> round = new ArrayList<>();
+        ArrayList<Integer> row0 = new ArrayList<>();
+        row0.add(5);
+        row0.add(6);
+        row0.add(7);
+        row0.add(8);
+        row0.add(9);
+        round.add(row0);
+        ArrayList<Integer> row1 = new ArrayList<>();
+        row1.add(1);
+        row1.add(2);
+        row1.add(3);
+        row1.add(4);
+        row1.add(5);
+        round.add(row1);
+        ArrayList<Integer> row2 = new ArrayList<>();
+        row2.add(6);
+        row2.add(5);
+        row2.add(4);
+        row2.add(3);
+        row2.add(2);
+        round.add(row2);
+        pt.calculateAverage(round);
+     //   PApplet.main(pt.getClass().getCanonicalName());
 
     }
 }
